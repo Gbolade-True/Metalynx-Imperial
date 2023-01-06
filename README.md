@@ -71,16 +71,7 @@ npm version 8+ (Currently using v8.1.x)
 added 1816 packages, and audited 1819 packages in 47s.
 ```
 
-(Yes there might be warnings about deprecated packages).
-
-```
-➜  metalynx-scatter git:(main) npm run husky-install
-
-> metalynx-scatter-app@0.1.5 husky-install
-> husky install
-
-husky - Git hooks installed
-```
+(Yes there might be warnings about deprecated packages, most of these should be dev script deprecations which are not used in production).
 
 #### Step 3: Start the development server
 
