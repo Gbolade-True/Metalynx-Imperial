@@ -4,6 +4,7 @@ import { useId } from "@mantine/hooks";
 import { IModule } from "../../components/modules/modules.type";
 import ClassificationModule from "../../components/modules/ClassificationBarModule";
 import StatisticsModule from "../../components/modules/StatisticsModule";
+import ConfisionMatrixModule from "../../components/modules/ConfusionMatrixModule";
 
 
 const DashboardLayout = (() => {
@@ -13,6 +14,7 @@ const DashboardLayout = (() => {
   const modules: IModule[] = [
     { id: useId(), name: 'Statistics', component: StatisticsModule, width: 'half' },
     { id: useId(), name: 'Classification', component: ClassificationModule, width: 'half' },
+    { id: useId(), name: 'Confusion Matrix', component: ConfisionMatrixModule, width: 'half' },
   ];
 
   return (

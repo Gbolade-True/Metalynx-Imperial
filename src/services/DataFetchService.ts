@@ -1,5 +1,6 @@
 // Import the csv from assets
 import { parse } from 'papaparse';
+import { DogBreed, LabelType, Trial } from './dataService.type';
 
 export interface DataFetchServiceAPI {
   getStatistics(): Promise<{ accuracy: number, error: number, samples: number } | Error>;
@@ -87,6 +88,80 @@ class DataFetchService implements DataFetchServiceAPI {
     }
 
     return result;
+  }
+
+  async getDogBreeds(): Promise<DogBreed[]> {
+    await this.checkData();
+
+    const labelField = 'Labels';
+
+    let dogBreeds = this.dataset[labelField]
+    .filter(label => label !== LabelType.UNLABELLED)
+
+    dogBreeds = [...new Set(dogBreeds)]
+    .map(breed => ({
+      label: breed,
+      value: breed
+    } as DogBreed))
+
+    return dogBreeds
+  }
+
+  async getConfusionMatrixStats(dogBreed: string): Promise<Trial | Error> {
+    await this.checkData();
+
+    let result: { [label: string]: { count: number } } = {};
+    
+    // Field Names
+    const labelField = 'Labels';
+    const predictionField = 'Predictions';
+
+    let TP = 0;
+    let FP = 0;
+    let TN = 0;
+    let FN = 0;
+
+    for (let i = 0; i < this.dataset[labelField].length; i++) {
+      const currentLabel = this.dataset[labelField][i];
+      const currentPred = this.dataset[predictionField][i];
+
+      if (result[currentLabel] === undefined) result[currentLabel] = { count: 0 }
+
+      if (currentLabel === dogBreed) {
+        result[currentPred].count += 1
+
+        // Calculate True Positives - If the label is the breed and the prediction is the breed, it is a True Positive
+        if (currentLabel === currentPred) {
+          TP += 1;
+          continue;
+        } 
+
+        // Calculate False Negatives - If the label is the breed and the prediction is not the breed, it is a False Negative
+        if (currentLabel !== currentPred) {
+          FN += 1;
+          continue;
+        } 
+      } else {
+        // Calculate False Positives - If the label is not the breed and prediction is the breed it is a False Positive
+        if (currentPred === dogBreed) {
+          FP += 1;
+          continue;
+        } 
+
+        // Calculate True Negatives - If label is not the dog breed and the prediction aligns with the label
+        if (currentLabel === currentPred) {
+          TN += 1;
+          continue;
+        } 
+      }
+    }
+  
+    return {
+      result,
+      CMS: {
+        TP, TN, FN, FP
+      }
+    };
   }
 }
 
