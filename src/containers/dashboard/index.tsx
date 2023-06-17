@@ -5,6 +5,7 @@ import { IModule } from "../../components/modules/modules.type";
 import ClassificationModule from "../../components/modules/ClassificationBarModule";
 import StatisticsModule from "../../components/modules/StatisticsModule";
 import ConfisionMatrixModule from "../../components/modules/ConfusionMatrixModule";
+import MLMetricsModule from "../../components/modules/MLMetricsModule";
 
 
 const DashboardLayout = (() => {
@@ -15,6 +16,7 @@ const DashboardLayout = (() => {
     { id: useId(), name: 'Statistics', component: StatisticsModule, width: 'half' },
     { id: useId(), name: 'Classification', component: ClassificationModule, width: 'half' },
     { id: useId(), name: 'Confusion Matrix', component: ConfisionMatrixModule, width: 'half' },
+    { id: useId(), name: 'ML Metrics', component: MLMetricsModule, width: 'half' },
   ];
 
   return (

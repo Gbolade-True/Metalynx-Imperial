@@ -5,11 +5,18 @@ export interface ConfusionMatrixStats {
     FN: number;
 }
 
-export interface Trial {
+export interface CMSResponse {
     CMS: ConfusionMatrixStats,
     result: {
         [label: string]: { count: number }, 
     }
+}
+export interface MLMetricsResponse {
+    accuracy: number;
+    precision: number;
+    recall: number;
+    specificity: number;
+    f1_score: number;
 }
 
 export interface DogBreed {

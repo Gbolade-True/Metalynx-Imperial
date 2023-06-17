@@ -4,7 +4,7 @@ import { XAxis, YAxis, Tooltip, ScatterChart, CartesianGrid, Scatter, Cell } fro
 import dataFetchService from "../../../services/DataFetchService";
 import { ConfusionMatrixStats, DogBreed, LabelType, } from "../../../services/dataService.type";
 
-const ConfisionMatrixModule = () => {
+const ConfusionMatrixModule = () => {
   const theme = useMantineTheme();
   const [chartData, setChartData] = useState<any[] | undefined>(undefined);
   const [confusionMetrics, setConfusionMetrics] = useState<ConfusionMatrixStats | undefined>(undefined);
@@ -145,4 +145,4 @@ const ConfisionMatrixModule = () => {
   );
 }
 
-export default ConfisionMatrixModule;
+export default ConfusionMatrixModule;

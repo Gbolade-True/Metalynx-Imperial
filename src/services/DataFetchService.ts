@@ -1,6 +1,6 @@
 // Import the csv from assets
 import { parse } from 'papaparse';
-import { DogBreed, LabelType, Trial } from './dataService.type';
+import { ConfusionMatrixStats, DogBreed, LabelType, CMSResponse, MLMetricsResponse } from './dataService.type';
 
 export interface DataFetchServiceAPI {
   getStatistics(): Promise<{ accuracy: number, error: number, samples: number } | Error>;
@@ -107,7 +107,7 @@ class DataFetchService implements DataFetchServiceAPI {
     return dogBreeds
   }
 
-  async getConfusionMatrixStats(dogBreed: string): Promise<Trial | Error> {
+  async getConfusionMatrixStats(dogBreed: string): Promise<CMSResponse | Error> {
     await this.checkData();
 
     let result: { [label: string]: { count: number } } = {};
@@ -115,6 +115,7 @@ class DataFetchService implements DataFetchServiceAPI {
     // Field Names
     const labelField = 'Labels';
     const predictionField = 'Predictions';
+    const accuracyField = 'Accuracy';
 
     let TP = 0;
     let FP = 0;
@@ -124,6 +125,7 @@ class DataFetchService implements DataFetchServiceAPI {
     for (let i = 0; i < this.dataset[labelField].length; i++) {
       const currentLabel = this.dataset[labelField][i];
       const currentPred = this.dataset[predictionField][i];
+      const currentAccuracy = this.dataset[accuracyField][i];
 
       if (result[currentLabel] === undefined) result[currentLabel] = { count: 0 }
 
@@ -142,15 +144,16 @@ class DataFetchService implements DataFetchServiceAPI {
           continue;
         } 
       } else {
-        // Calculate False Positives - If the label is not the breed and prediction is the breed it is a False Positive
-        if (currentPred === dogBreed) {
-          FP += 1;
+        // Calculate True Negatives - If label is not the dog breed and the prediction aligns with the label
+        // Some logical tweaks to make this work in this context, to handle correct predictions on unlabelled data
+        if (currentPred === dogBreed && currentAccuracy === 1) {
+          TN += 1;
           continue;
         } 
 
-        // Calculate True Negatives - If label is not the dog breed and the prediction aligns with the label
-        if (currentLabel === currentPred) {
-          TN += 1;
+        // Calculate False Positives - If the label is not the breed and prediction is the breed it is a False Positive
+        if (currentPred === dogBreed) {
+          FP += 1;
           continue;
         } 
       }
@@ -161,6 +164,23 @@ class DataFetchService implements DataFetchServiceAPI {
       CMS: {
         TP, TN, FN, FP
       }
+    };
+  }
+
+  async calculateMetrics(metrics: ConfusionMatrixStats): Promise<MLMetricsResponse | Error> {
+
+    const accuracy = (metrics['TP'] + metrics['TN']) / (metrics['TP'] + metrics['TN'] + metrics['FP'] + metrics['FN'])
+    const precision = metrics['TP'] / (metrics['TP'] + metrics['FP'])
+    const recall = metrics['TP'] / (metrics['TP'] + metrics['FN'])
+    const specificity =  metrics['TN'] / (metrics['TN'] + metrics['FP'])
+    const f1_score = 2*precision*recall / (precision + recall)
+  
+    return {
+      accuracy,
+      precision,
+      recall,
+      specificity,
+      f1_score
     };
   }
 }
