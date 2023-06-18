@@ -87,7 +87,7 @@ const MLMetricsModule = () => {
                 value={selectedDog}
                 onChange={onSelectChange}
             />
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" data-testid='radar_chart_container'>
                 <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
                     <Tooltip />
                     <PolarGrid />

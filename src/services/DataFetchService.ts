@@ -8,6 +8,7 @@ export interface DataFetchServiceAPI {
 
 class DataFetchService implements DataFetchServiceAPI {
   dataset: { [fieldNames: string]: any[] } = {};
+  csvString = '';
 
   constructor() {
     this.fetchCSVData().then(res => this.dataset = res.data);
@@ -31,6 +32,7 @@ class DataFetchService implements DataFetchServiceAPI {
     return fetch(`${process.env.PUBLIC_URL}/data/${filename}`)
     .then(res => res.text())
     .then(csvString => {
+      this.csvString = csvString;
       const results = parse(csvString, {
         header: true, 
         dynamicTyping: true,
