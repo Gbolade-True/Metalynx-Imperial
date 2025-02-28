@@ -1,4 +1,4 @@
-# Metalynx Imperial Take Home Exercise 2023
+# Metalynx Imperial
 ## Introduction
 
 This repository is a React SPA app that represents a dashboard in which computes several statistics of a given CSV dataset. The provided dataset is the [Stanford Dogs Dataset](https://www.kaggle.com/datasets/jessicali9530/stanford-dogs-dataset) dataset trained for dog breed classification on MobileNetV3, and the goal of this webapp is to display insights from these results.
